@@ -1,4 +1,5 @@
 import os
+from collections.abc import AsyncGenerator
 
 from qdrant_client import AsyncQdrantClient
 
@@ -17,7 +18,6 @@ class QdrantConnectionManager:
                 cls._client = AsyncQdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
         return cls._client
 
-from collections.abc import AsyncGenerator
 
 async def get_qdrant_client() -> AsyncGenerator[AsyncQdrantClient, None]:
     yield QdrantConnectionManager.get_client()
