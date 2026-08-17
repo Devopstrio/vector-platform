@@ -53,7 +53,7 @@ class VectorRepository:
         return True
 
     async def search(self, req: VectorSearchRequest) -> list[SearchResult]:
-        hits = await self.qdrant.search(
+        hits = await self.qdrant.search(  # type: ignore[attr-defined]
             collection_name=req.collection_name,
             query_vector=req.vector,
             limit=req.top_k
