@@ -53,11 +53,13 @@ class VectorRepository:
         return True
 
     async def search(self, req: VectorSearchRequest) -> list[SearchResult]:
-        hits = await self.qdrant.search(  # type: ignore[attr-defined]
+        response = await self.qdrant.query_points(
             collection_name=req.collection_name,
-            query_vector=req.vector,
-            limit=req.top_k
+            query=req.vector,
+            limit=req.top_k,
+            with_payload=True
         )
+        hits = response.points
         logger.info("Search completed", collection=req.collection_name, results=len(hits))
         return [
             SearchResult(id=str(hit.id), score=hit.score, payload=hit.payload)
