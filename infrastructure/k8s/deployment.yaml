@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vector-platform
+  namespace: devopstrio-system
+  labels:
+    app: vector-platform
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vector-platform
+  template:
+    metadata:
+      labels:
+        app: vector-platform
+    spec:
+      containers:
+      - name: vector-platform
+        image: devopstrio/vector-platform:latest
+        ports:
+        - containerPort: 8018
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: connection_string
+        - name: QDRANT_URL
+          valueFrom:
+            secretKeyRef:
+              name: qdrant-secrets
+              key: url
+        - name: QDRANT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: qdrant-secrets
+              key: api_key
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"

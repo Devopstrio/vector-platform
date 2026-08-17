@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  vector_platform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8018:8018"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///:memory:
+      - QDRANT_URL=:memory:
