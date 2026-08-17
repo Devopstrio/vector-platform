@@ -11,7 +11,7 @@ def test_health_check() -> None:
     # Need to enter lifespan for the test
     with TestClient(app) as client:
         response = client.get("/health")
-        assert response.status_code == 200
+        assert response.status_code == 200, response.text
 
 def test_full_vector_lifecycle() -> None:
     with TestClient(app) as client:
@@ -21,7 +21,7 @@ def test_full_vector_lifecycle() -> None:
             "vector_size": 3,
             "distance_metric": "Cosine"
         })
-        assert response.status_code == 200
+        assert response.status_code == 200, response.text
         data = response.json()
         assert data["name"] == "test_collection"
 
@@ -32,7 +32,7 @@ def test_full_vector_lifecycle() -> None:
             "vector": [0.1, 0.2, 0.3],
             "payload": {"document": "hello world"}
         })
-        assert response.status_code == 200
+        assert response.status_code == 200, response.text
 
         # 3. Search Vector
         response = client.post("/v1/vectors/search", json={
@@ -40,7 +40,9 @@ def test_full_vector_lifecycle() -> None:
             "vector": [0.1, 0.2, 0.3],
             "top_k": 1
         })
-        assert response.status_code == 200
+        if response.status_code != 200:
+            print(response.json())
+        assert response.status_code == 200, response.text
         search_data = response.json()
         assert len(search_data) == 1
         assert search_data[0]["payload"]["document"] == "hello world"
